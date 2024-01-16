@@ -324,13 +324,13 @@ static ssize_t shofer_write(struct file *filp, const char __user *ubuf,
 static long control_ioctl (struct file *filp, unsigned int request, unsigned long arg)
 {
 	ssize_t retval = 0;
-	/*struct shofer_dev *shofer = filp->private_data;
+    struct shofer_dev *shofer = filp->private_data;
 	struct buffer *in_buff = shofer->in_buff;
 	struct buffer *out_buff = shofer->out_buff;
 	struct kfifo *fifo_in = &in_buff->fifo;
 	struct kfifo *fifo_out = &out_buff->fifo;
 	char c;
-	int got;*/
+	int got;
 	struct shofer_ioctl cmd;
 
 	if (_IOC_TYPE(request) != SHOFER_IOCTL_TYPE || _IOC_NR(request) != SHOFER_IOCTL_NR) {
@@ -357,29 +357,31 @@ static long control_ioctl (struct file *filp, unsigned int request, unsigned lon
 	/* copy cmd.count bytes from in_buff to out_buff */
 	/* todo (similar to timer) */
     	/* get locks on both buffers */
+	/* get locks on both buffers */
 	spin_lock(&out_buff->key);
 	spin_lock(&in_buff->key);
 
 	dump_buffer("control-start:in_buff", in_buff);
 	dump_buffer("control-start:out_buff", out_buff);
-
-	if (kfifo_len(fifo_in) > 0 && kfifo_avail(fifo_out) > 0) {
-		retval = kfifo_out_peek(fifo_in, &cmd.c, 1);
-		if (retval > 0) {
-			retval = kfifo_in(fifo_out, &cmd.c, 1);
-			if (retval)
-				LOG("control moved '%c' from in to out", cmd.c);
-			else /* should't happen! */
-				klog(KERN_WARNING, "kfifo_in failed");
-		}
-		else { /* should't happen! */
-			klog(KERN_WARNING, "kfifo_out_peek failed");
-		}
-	}
-	else {
-		LOG("control: nothing in input buffer");
+    
+	if (kfifo_len(fifo_in) < cmd.count && kfifo_avail(fifo_out) < cmd.count) {
+		LOG("control-ioctl: not enough data in input/output buffer");
 		//for test: put '#' in output buffer
-		retval = kfifo_in(fifo_out, "#", 1);
+		got = kfifo_put(fifo_out, '#');
+    } else {
+        for(int i=0; i<cmd.count; i++) {
+            got = kfifo_get(fifo_in, &c);
+            if (got > 0) {
+                got = kfifo_put(fifo_out, c);
+                if (got)
+                    LOG("control-iotcl moved '%c' from in to out", c);
+                else /* should't happen! */
+                    klog(KERN_WARNING, "kfifo_put failed");
+            }
+            else { /* should't happen! */
+                klog(KERN_WARNING, "kfifo_get failed");
+            }
+        }
 	}
 
 	dump_buffer("control-end:in_buff", in_buff);
@@ -388,8 +390,6 @@ static long control_ioctl (struct file *filp, unsigned int request, unsigned lon
 	spin_unlock(&in_buff->key);
 	spin_unlock(&out_buff->key);
 
-	/* reschedule timer for period */
-	mod_timer(&timer.timer, jiffies + msecs_to_jiffies(TIMER_PERIOD));
 
 	return retval;
 }
