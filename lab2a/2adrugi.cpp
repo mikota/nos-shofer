@@ -13,7 +13,7 @@ struct pollfd fds[device_num];
 int main() {
     srand(time(NULL));
     for (int i = 0; i < device_num; i++) {
-        std::string devname = "/dev/shofer/" + std::to_string(i);
+        std::string devname = "/dev/shofer" + std::to_string(i);
         fds[i].fd = open(devname.c_str(), O_WRONLY);
         if (fds[i].fd == -1) {
             std::cout << "Error opening file" << std::endl;
