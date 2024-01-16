@@ -8,8 +8,10 @@
 
 
 constexpr int device_num = 6;
+constexpr int transmission_num = 10;
 
 struct pollfd fds[device_num];
+
 
 int main() {
     for (int i = 0; i < device_num; i++) {
@@ -22,13 +24,15 @@ int main() {
         fds[i].events = POLLIN;
     } 
 
-    poll(fds, device_num, -1);
-    
-    for (int i = 0; i < device_num; i++) {
-        if (fds[i].revents & POLLIN) {
-            char c;
-            read(fds[i].fd, &c, 1);
-            std::cout << "shofer " << i << " sent " << c << std::endl;
+    for (int i = 0; i < transmission_num; i++) { 
+        poll(fds, device_num, -1);
+        
+        for (int i = 0; i < device_num; i++) {
+            if (fds[i].revents & POLLIN) {
+                char c;
+                read(fds[i].fd, &c, 1);
+                std::cout << "shofer " << i << " sent " << c << std::endl;
+            }
         }
     }
 

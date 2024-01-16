@@ -7,6 +7,7 @@
 #include <string>
 
 constexpr int device_num = 6;
+constexpr int transmission_num = 10;
 struct pollfd fds[device_num];
 
 int main() {
@@ -21,15 +22,17 @@ int main() {
         fds[i].events = POLLOUT;
     } 
     
-    sleep(1);
+    for (int i = 0; i < transmission_num; i++) {
+        sleep(1);
 
-    poll(fds, device_num, -1);
+        poll(fds, device_num, -1);
 
-    for (int i = 0; i < device_num; i++) {
-        if (fds[i].revents & POLLOUT) {
-            char c = rand() % 26 + 'a';
-            write(fds[i].fd, &c, 1);
-            std::cout << "sent " << c << " to shofer " << i << std::endl;
+        for (int i = 0; i < device_num; i++) {
+            if (fds[i].revents & POLLOUT) {
+                char c = rand() % 26 + 'a';
+                write(fds[i].fd, &c, 1);
+                std::cout << "sent " << c << " to shofer " << i << std::endl;
+            }
         }
     }
 
