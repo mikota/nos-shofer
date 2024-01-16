@@ -29,6 +29,6 @@ int main() {
     }
 
     for (int i = 0; i < device_num; i++) {
-        close(fds[i]);
+        close(fds[i].fd);
     }
 }
