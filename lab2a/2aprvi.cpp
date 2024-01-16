@@ -11,7 +11,7 @@ int main() {
             if (fds[i].revents & POLLIN) {
                 char c;
                 read(fds[i].fd, &c, 1);
-                std::cout << "shofer " << i << " sent " << c << std::endl;
+                std::cout << "read " << c << " from shofer " << i << std::endl;
             }
         }
     }

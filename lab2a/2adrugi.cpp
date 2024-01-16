@@ -13,11 +13,14 @@ int main() {
         poll(fds, device_num, -1);
 
         std::vector<int> ready_fds;
+        std::cout << "shofers ready: ";
         for (int i = 0; i < device_num; i++) {
             if (fds[i].revents & POLLOUT) {
                 ready_fds.push_back(i);
+                std::cout << i << " ";
             }
-        }
+        } 
+        std::cout << std::endl;
         int fd = ready_fds[rand() % ready_fds.size()];
         char c = 'a' + rand() % 26;
         write(fds[fd].fd, &c, 1);
