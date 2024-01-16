@@ -1,30 +1,10 @@
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <poll.h>
-#include <fcntl.h>
-#include <iostream>
+#include "2a.h"
 #include <string>
 
-
-constexpr int device_num = 6;
-constexpr int transmission_num = 10;
-
-struct pollfd fds[device_num];
-
-
 int main() {
-    for (int i = 0; i < device_num; i++) {
-        std::string devname = "/dev/shofer" + std::to_string(i);
-        fds[i].fd = open(devname.c_str(), O_RDONLY);
-        if (fds[i].fd == -1) {
-            std::cout << "Error opening " << devname << std::endl;
-            return 1;
-        }
-        fds[i].events = POLLIN;
-    } 
-
-    for (int i = 0; i < transmission_num; i++) { 
+    retreat_on_sigint();
+    open_fds(O_RDONLY);
+    while(1) {
         poll(fds, device_num, -1);
         
         for (int i = 0; i < device_num; i++) {
@@ -35,8 +15,5 @@ int main() {
             }
         }
     }
-
-    for (int i = 0; i < device_num; i++) {
-        close(fds[i].fd);
-    }
+    retreat();
 }

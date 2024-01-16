@@ -12,17 +12,10 @@ struct pollfd fds[device_num];
 
 int main() {
     srand(time(NULL));
-    for (int i = 0; i < device_num; i++) {
-        std::string devname = "/dev/shofer" + std::to_string(i);
-        fds[i].fd = open(devname.c_str(), O_WRONLY);
-        if (fds[i].fd == -1) {
-            std::cout << "Error opening " << devname << std::endl;
-            return 1;
-        }
-        fds[i].events = POLLOUT;
-    } 
+    retreat_on_sigint();
+    open_fds(O_WRONLY);
     
-    for (int i = 0; i < transmission_num; i++) {
+    while(1) {
         sleep(1);
 
         poll(fds, device_num, -1);
@@ -35,8 +28,5 @@ int main() {
             }
         }
     }
-
-    for (int i = 0; i < device_num; i++) {
-        close(fds[i].fd);
-    }
+    retreat();
 }
