@@ -9,12 +9,13 @@
 constexpr int device_num = 6;
 struct pollfd fds[device_num];
 
-void retreat() {
+int retreat() {
     for (int i = 0; i < device_num; i++) {
         close(fds[i].fd);
     }
     std::cout << "retreat" << std::endl;
     exit(0);
+    return 0;
 }
 
 void retreat_on_sigint() {
