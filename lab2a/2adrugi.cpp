@@ -1,10 +1,6 @@
 #include "2a.h"
 #include <string>
 
-constexpr int device_num = 6;
-constexpr int transmission_num = 10;
-struct pollfd fds[device_num];
-
 int main() {
     srand(time(NULL));
     retreat_on_sigint();

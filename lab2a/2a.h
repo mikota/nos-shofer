@@ -9,7 +9,7 @@
 constexpr int device_num = 6;
 struct pollfd fds[device_num];
 
-int retreat() {
+void retreat(int failure) {
     for (int i = 0; i < device_num; i++) {
         close(fds[i].fd);
     }
