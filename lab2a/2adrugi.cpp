@@ -1,5 +1,6 @@
 #include "2a.h"
 #include <string>
+#include <vector>
 
 int main() {
     srand(time(NULL));
@@ -11,13 +12,16 @@ int main() {
 
         poll(fds, device_num, -1);
 
+        std::vector<int> ready_fds;
         for (int i = 0; i < device_num; i++) {
             if (fds[i].revents & POLLOUT) {
-                char c = rand() % 26 + 'a';
-                write(fds[i].fd, &c, 1);
-                std::cout << "sent " << c << " to shofer " << i << std::endl;
+                ready_fds.push_back(i);
             }
         }
+        int fd = ready_fds[rand() % ready_fds.size()];
+        char c = 'a' + rand() % 26;
+        write(fds[fd].fd, &c, 1);
+        std::cout << "wrote " << c << " to shofer " << fd << std::endl;
     }
     retreat();
 }
