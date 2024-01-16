@@ -15,6 +15,10 @@ int main() {
     for (int i = 0; i < device_num; i++) {
         std::string devname = "/dev/shofer/" + std::to_string(i);
         fds[i].fd = open(devname.c_str(), O_RDONLY);
+        if (fds[i].fd == -1) {
+            std::cout << "Error opening file" << std::endl;
+            return 1;
+        }
         fds[i].events = POLLIN;
     } 
 
@@ -22,9 +26,9 @@ int main() {
     
     for (int i = 0; i < device_num; i++) {
         if (fds[i].revents & POLLIN) {
-            char buf[1024];
-            read(fds[i].fd, buf, 1024);
-            std::cout << buf << std::endl;
+            char c;
+            read(fds[i].fd, &c, 1);
+            std::cout << "shofer " << i << " sent " << c << std::endl;
         }
     }
 
