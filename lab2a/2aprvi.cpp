@@ -15,10 +15,10 @@ struct pollfd fds[device_num];
 
 int main() {
     for (int i = 0; i < device_num; i++) {
-        std::string devname = "/dev/shofer/" + std::to_string(i);
+        std::string devname = "/dev/shofer" + std::to_string(i);
         fds[i].fd = open(devname.c_str(), O_RDONLY);
         if (fds[i].fd == -1) {
-            std::cout << "Error opening file" << std::endl;
+            std::cout << "Error opening " << devname << std::endl;
             return 1;
         }
         fds[i].events = POLLIN;
