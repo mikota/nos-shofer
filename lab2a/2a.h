@@ -15,7 +15,6 @@ void retreat(int failure=0) {
     }
     std::cout << "retreat" << std::endl;
     exit(0);
-    return 0;
 }
 
 void retreat_on_sigint() {
