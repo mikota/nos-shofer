@@ -332,6 +332,7 @@ static long control_ioctl (struct file *filp, unsigned int request, unsigned lon
 	char c;
 	int got;
 	struct shofer_ioctl cmd;
+    int i;
 
 	if (_IOC_TYPE(request) != SHOFER_IOCTL_TYPE || _IOC_NR(request) != SHOFER_IOCTL_NR) {
 		klog(KERN_WARNING, "IOC type and/or nr don't match");
@@ -369,7 +370,7 @@ static long control_ioctl (struct file *filp, unsigned int request, unsigned lon
 		//for test: put '#' in output buffer
 		got = kfifo_put(fifo_out, '#');
     } else {
-        for(int i=0; i<cmd.count; i++) {
+        for(i=0; i<cmd.count; i++) {
             got = kfifo_get(fifo_in, &c);
             if (got > 0) {
                 got = kfifo_put(fifo_out, c);
