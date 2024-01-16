@@ -24,7 +24,7 @@ int main() {
         int fd = ready_fds[rand() % ready_fds.size()];
         char c = 'a' + rand() % 26;
         write(fds[fd].fd, &c, 1);
-        std::cout << "wrote " << c << " to shofer " << fd << std::endl;
+        std::cout << "\t->wrote " << c << " to shofer " << fd << std::endl;
     }
     retreat();
 }
