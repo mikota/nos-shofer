@@ -17,7 +17,7 @@ struct shofer_ioctl {
 
 
 int main() {
-    int fd = open("/dev/shofer_control", O_RDWR);
+    int fd = open("/dev/shofer_control", O_RDONLY);
     if (fd == -1) {
         std::cout << "Error opening /dev/shofer_control" << std::endl;
         exit(1);
