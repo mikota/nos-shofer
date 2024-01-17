@@ -6,7 +6,7 @@
 
 int main() {
     srand(time(NULL));
-    int fd = open("/dev/shofer_in", O_RDONLY);
+    int fd = open("/dev/shofer_out", O_RDONLY);
     if (fd == -1) {
         std::cout << "Error opening /dev/shofer_in" << std::endl;
         exit(1);
