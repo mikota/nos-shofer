@@ -6,14 +6,14 @@
 
 int main() {
     srand(time(NULL));
-    int fd = open("/dev/shofer_out", O_RDONLY);
+    int fd = open("/dev/shofer_in", O_RDONLY);
     if (fd == -1) {
-        std::cout << "Error opening /dev/shofer_out" << std::endl;
+        std::cout << "Error opening /dev/shofer_in" << std::endl;
         exit(1);
     }
-    char c = 'a' + rand() % 26;
-    write(fd, &c, 1);
-    std::cout << "wrote " << c << " to /dev/shofer_out" << std::endl;
+    char c = ' ';
+    read(fd, &c, 1);
+    std::cout << "read " << c << " from /dev/shofer_in" << std::endl;
     close(fd);
     return 0;
 }
