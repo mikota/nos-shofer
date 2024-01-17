@@ -26,7 +26,7 @@ int main() {
     struct shofer_ioctl cmd;
     cmd.command = SHOFER_IOCTL_COPY;
     cmd.count = 1;
-    ioctl(fd, SHOFER_IOCTL_TYPE, &cmd);
+    ioctl(fd, SHOFER_IOCTL_TYPE | SHOFER_IOCTL_NR, &cmd);
 
     close(fd);
     return 0;
